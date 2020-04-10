@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="org.example.PrimaryController" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.PrimaryController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -55,7 +57,16 @@
       <children>
             <ScrollPane prefHeight="756.0" prefWidth="914.0" />
             <ImageView fx:id="imageView" fitHeight="742.0" fitWidth="900.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-            <VBox layoutX="906.0" layoutY="1.0" prefHeight="771.0" prefWidth="280.0" />
+            <VBox layoutX="906.0" layoutY="1.0" prefHeight="771.0" prefWidth="280.0">
+               <children>
+                  <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                    <buttons>
+                      <Button fx:id="btn1" mnemonicParsing="false" text="BFS" />
+                        <Button layoutX="205.0" layoutY="17.0" mnemonicParsing="false" text="Button" />
+                        <Button layoutX="205.0" layoutY="17.0" mnemonicParsing="false" text="Button" />
+                    </buttons>
+                  </ButtonBar>
+               </children></VBox>
             <Pane fx:id="imagePane" prefHeight="756.0" prefWidth="914.0" />
       </children>
     </AnchorPane>

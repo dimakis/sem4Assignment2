@@ -4,11 +4,14 @@ import java.io.*;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import graphTraversal.BreadthFirstSearch;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import utils.GraphNodeAL;
 
 public class PrimaryController {
 
@@ -16,6 +19,9 @@ public class PrimaryController {
     public Image blackAndWhite;
     public double xCoord, yCoord;
     public Pane imagePane;
+    public Button btn1;
+    public GraphNodeAL start, dest;
+    public boolean startTrue = false;
 //    public XSream xSream = new XStream();
 
     public void initialize() {
@@ -24,7 +30,7 @@ public class PrimaryController {
         blackAndWhite = setBlackWhite(im);
         imageView.setImage(blackAndWhite);
         selectWaypoint();
-
+        bfs();
     }
 
     // takes in an image, returns a black and white writable image using RGB values in image, optimised for maps.
@@ -57,6 +63,10 @@ public class PrimaryController {
             xCoord = e.getX() - 7;
             yCoord = e.getY() - 7;
             imagePane.toFront();
+
+            GraphNodeAL node = new GraphNodeAL(null, xCoord, yCoord);
+            startTrue = true;
+            assignStartDestNode(node);
             Circle circle = new Circle();
             circle.setCenterX(xCoord);
             circle.setCenterY(yCoord);
@@ -68,19 +78,33 @@ public class PrimaryController {
         });
     }
 
+    public void assignStartDestNode(GraphNodeAL node) {
+        if (!startTrue) start = node;
+        else {
+            dest = node;
+            start.data = node;
+        }
+    }
+
+    public void bfs() {
+        btn1.setOnAction(e -> {
+            BreadthFirstSearch.findPathBreadthFirst(start, dest);
+
+        });
+    }
+
     public void removeChildrenFromImagePane() {
         imagePane.getChildren().clear();
     }
-    public void load() throws Exception
-    {
+
+    public void load() throws Exception {
         XStream xstream = new XStream(new DomDriver());
         ObjectInputStream is = xstream.createObjectInputStream(new FileReader("nodes.xml"));
 //        products = (ArrayList<Product>) is.readObject();
         is.close();
     }
 
-    public void save() throws Exception
-    {
+    public void save() throws Exception {
         XStream xstream = new XStream(new DomDriver());
         ObjectOutputStream out = xstream.createObjectOutputStream(new FileWriter("nodes.xml"));
 //        out.writeObject(products);
