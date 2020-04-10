@@ -73,7 +73,7 @@ public class PrimaryController {
     }
     public void load() throws Exception
     {
-        XStream xstream = new XStream();   //(new DomDriver());
+        XStream xstream = new XStream(new DomDriver());
         ObjectInputStream is = xstream.createObjectInputStream(new FileReader("nodes.xml"));
 //        products = (ArrayList<Product>) is.readObject();
         is.close();
