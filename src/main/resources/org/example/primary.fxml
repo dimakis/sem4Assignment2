@@ -67,7 +67,7 @@
         <Button layoutX="923.0" layoutY="158.0" mnemonicParsing="false" onAction="#setStart" prefHeight="26.0" prefWidth="136.0" text="Manually Select" />
         <Button layoutX="923.0" layoutY="218.0" mnemonicParsing="false" onAction="#setEnd" prefHeight="26.0" prefWidth="136.0" text="Manually Select" />
         <Button fx:id="btn11" layoutX="999.0" layoutY="25.0" mnemonicParsing="false" text="BFS" />
-        <Button layoutX="1054.0" layoutY="25.0" mnemonicParsing="false" text="Dijstras" />
+        <Button fx:id="djikstrasBtn" layoutX="1054.0" layoutY="25.0" mnemonicParsing="false" text="Dijstras" />
         <SplitMenuButton layoutX="922.0" layoutY="287.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="263.0" text="Places to Include">
           <items>
             <MenuItem mnemonicParsing="false" text="Action 1" />
@@ -95,6 +95,7 @@
             <Label layoutX="913.0" layoutY="461.0" text="Enter Coordinates or select from map with pointer" />
             <ComboBox fx:id="selectStart" layoutX="924.0" layoutY="126.0" prefHeight="26.0" prefWidth="263.0" promptText="Select Starting Location" />
             <ComboBox fx:id="selectEnd" layoutX="924.0" layoutY="188.0" prefHeight="26.0" prefWidth="263.0" promptText="Select Destination" />
+        <Pane fx:id="landmarkPane" prefHeight="742.0" prefWidth="900.0" />
       </children>
     </AnchorPane>
   </children>

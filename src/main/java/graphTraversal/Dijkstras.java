@@ -52,5 +52,4 @@ public class Dijkstras {
         } while (!unencountered.isEmpty());
         return null; //No path found, so return null
     }
-
 }

@@ -3,8 +3,7 @@ package org.example;
 import java.io.*;
 import java.util.*;
 
-//import com.thoughtworks.xstream.XStream;
-//import com.thoughtworks.xstream.io.xml.DomDriver;
+
 import graphTraversal.CostedPath;
 import graphTraversal.Dijkstras;
 import javafx.beans.InvalidationListener;
@@ -21,7 +20,6 @@ import utils.GraphNodeAL;
 import utils.Landmark;
 
 import static org.example.DataManager.landmarks;
-import static org.example.DataManager.*;
 
 public class PrimaryController {
 
@@ -36,12 +34,14 @@ public class PrimaryController {
     public GraphNodeAL gn = new GraphNodeAL("", 0, 0);
     public TextField landmarkName;
     public ComboBox selectStart, selectEnd;
+    public Pane landmarkPane;
+    public Button djikstrasBtn;
 
     public void initialize() {
         DataManager.createLandmarkList();
         File file = new File("src/main/resources/org/example/romeMap.jpg");
         try {
-            DataManager.loadFromCSV("src/main/resources/org/example/landmarks.csv",landmarks);
+            DataManager.loadFromCSV("src/main/resources/org/example/landmarks.csv", landmarks);
         } catch (Exception e) {
             System.out.println("Load Failed");
         }
@@ -52,33 +52,35 @@ public class PrimaryController {
         imageView.setImage(blackAndWhite);
         selectWaypoint();
         graphArray = createGraphArray(blackAndWhite);
+        updateLandmarks();
+        runDijkstras();
 //        findRouteDijkstras();
 //        example();
 //        bfs();
     }
 
     public void example() {
-        GraphNodeAL<Landmark> col = new GraphNodeAL(new Landmark("Collesuem"));
+        GraphNodeAL<Landmark> col = new GraphNodeAL(new Landmark(653,602,"Collesuem"));
         GraphNodeAL<Landmark> gio = new GraphNodeAL(new Landmark("Giovanni"));
         GraphNodeAL<Landmark> piaV = new GraphNodeAL(new Landmark("Piazza Venezia"));
         GraphNodeAL<Landmark> mar = new GraphNodeAL(new Landmark("Maria"));
-        GraphNodeAL<Landmark> tre = new GraphNodeAL(new Landmark("Trevi"));
-        col.connectToNodeUndirected(gio, 500);
-        col.connectToNodeUndirected(piaV, 150);
-        col.connectToNodeUndirected(mar, 200);
-        gio.connectToNodeUndirected(mar, 600);
-        piaV.connectToNodeUndirected(tre, 250);
-        mar.connectToNodeUndirected(tre, 300);
+        GraphNodeAL<Landmark> tre = new GraphNodeAL(new Landmark(550, 414, "Trevi"));
+        col.connectToNodeUndirected(col,gio, 500);
+        col.connectToNodeUndirected(col,piaV, 150);
+        col.connectToNodeUndirected(col,mar, 200);
+        gio.connectToNodeUndirected(gio,mar, 600);
+        piaV.connectToNodeUndirected(piaV,tre, 250);
+        mar.connectToNodeUndirected(mar,tre, 300);
         System.out.println("The cheapest path");
         System.out.println("using Dijkstra's algorithm:");
         System.out.println("-------------------------------------");
-        CostedPath cpa = Dijkstras.findCheapestPathDijkstra(col, tre.getData());
+        CostedPath cpa = Dijkstras.findCheapestPathDijkstra(col, tre);
         for (GraphNodeAL<?> n : cpa.pathList)
             System.out.println(n.data);
         System.out.println("\nThe total path cost is: " + cpa.pathCost);
     }
 
-    public void populateComboBox()  {
+    public void populateComboBox() {
         selectStart.getItems().addAll(landmarks);
         selectEnd.getItems().addAll(landmarks);
     }
@@ -108,6 +110,11 @@ public class PrimaryController {
         return writableImage;
     }
 
+//    public void setUpExample() {
+//        Landmark lk = new Landmark(startNode)
+//        GraphNodeAL<Landmark> col = new GraphNodeAL<>()
+//    }
+
     public void findRouteDijkstras(GraphNodeAL node) {
         if (startNode) {
 //            start = selectWaypoint();
@@ -118,10 +125,10 @@ public class PrimaryController {
 //            dest = selectWaypoint();
             System.out.println("Dest");
             dest = node;
-            node.connectToNodeDirected(start, 800);
+            node.connectToNodeDirected(start,dest, 800);
             dest.data = "Colleseum";
             startNode = true;
-            CostedPath costedPath = Dijkstras.findCheapestPathDijkstra(start, dest);
+            CostedPath costedPath = Dijkstras.findCheapestPathDijkstra(start, dest.data);
             System.out.println("Hello," + costedPath);
         }
 //        CostedPath costedPath = Dijkstras.findCheapestPathDijkstra(start, dest);
@@ -151,11 +158,11 @@ public class PrimaryController {
     }
 
     public void selectWaypoint() {
-        imagePane.setOnMouseClicked(e -> {
-            imageView.toFront();
+        landmarkPane.setOnMouseClicked(e -> {
+//            imageView.toFront();
             xCoord = e.getX() - 7;
             yCoord = e.getY() - 7;
-            imagePane.toFront();
+//            imagePane.toFront();
 //            GraphNodeAL node = new GraphNodeAL(null, xCoord, yCoord);
 //            startTrue = true;
 //            assignStartDestNode(node);
@@ -168,7 +175,7 @@ public class PrimaryController {
             circle.relocate(xCoord, yCoord);
             System.out.println("xCoord: " + xCoord + ", yCoord: " + yCoord);
 //            gn = (new GraphNodeAL("", xCoord, yCoord));
-            findRouteDijkstras(gn);
+//            findRouteDijkstras(gn);
         });
     }
 //
@@ -205,7 +212,7 @@ public class PrimaryController {
 
 //        Icon ico = new Image("src/main/resources/org/example/landmarkIcon.png");
         Landmark landmark = new Landmark(xCoord, yCoord, landmarkName.getText());
-        GraphNodeAL<Landmark> lmark = new GraphNodeAL<Landmark>(landmark);
+//        GraphNodeAL<Landmark> lmark = new GraphNodeAL<Landmark>(landmark);
         landmarks.add(landmark);
         Circle landmarkCircle = new Circle();
         landmarkCircle.setFill(Color.PURPLE);
@@ -213,11 +220,38 @@ public class PrimaryController {
         landmarkCircle.setCenterY(yCoord);
         imagePane.getChildren().add(landmarkCircle);
         try {
-            DataManager.saveArraylistToCSV("src/main/resources/org/example/landmarks.csv",landmarks);
+//            updateLandmarks();
+            DataManager.saveArraylistToCSV("src/main/resources/org/example/landmarks.csv", landmarks);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Save Failure");
         }
         //manually selecting landmark location
+    }
+    public void runDijkstras()  {
+        djikstrasBtn.setOnAction(e -> {
+            GraphNodeAL stNode = new GraphNodeAL((Landmark) selectStart.getSelectionModel().getSelectedItem());
+//            stNode.setData(selectStart.getSelectionModel().getSelectedItem());
+            GraphNodeAL edNode = new GraphNodeAL((Landmark) selectEnd.getSelectionModel().getSelectedItem());
+            stNode.connectToNodeUndirected(stNode,edNode, 500);
+            CostedPath cp = Dijkstras.findCheapestPathDijkstra(stNode,edNode);
+            System.out.println(cp);
+//            Dijkstras.findCheapestPathDijkstra((GraphNodeAL<?>) selectStart.getSelectionModel().getSelectedItem(),selectEnd.getSelectionModel().getSelectedItem());
+        });
+    }
+
+    public void updateLandmarks() {
+        landmarkPane.getChildren().clear();
+        if (landmarks.size() > 0) {
+            for (Object landmark : landmarks) {
+                Circle circle = new Circle();
+                System.out.println(landmark);
+                circle.setCenterX(((Landmark) landmark).x + 6);
+                circle.setCenterY(((Landmark) landmark).y + 6);
+                circle.setRadius(6);
+                circle.setFill(Color.ORANGE);
+                landmarkPane.getChildren().add(circle);
+            }
+        }
     }
 }

@@ -6,6 +6,8 @@ import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import utils.GraphNodeAL;
 import utils.Landmark;
 
 import java.io.*;
@@ -13,7 +15,7 @@ import java.util.*;
 
 
 public class DataManager {
-    public static ObservableList landmarks;
+    public static ObservableList<Landmark> landmarks;
 
     public static void createLandmarkList(){
         landmarks = FXCollections.observableArrayList();
@@ -33,7 +35,7 @@ public class DataManager {
 
             for (Object obj: list) {
                 Landmark lk = (Landmark) obj;
-                data.add(new String[]{String.valueOf(lk.x), String.valueOf(lk.y),lk.landmarkName});
+                data.add(new String[]{String.valueOf((lk.x)), String.valueOf(lk.y),lk.landmarkName});
             }
             writer.writeAll(data);
             out.close();
@@ -44,16 +46,15 @@ public class DataManager {
 
     }
 
-    public static void loadFromCSV(String file, List list) throws IOException, CsvValidationException {
+    public static void loadFromCSV(String file, List list)  {
         try {
             FileReader reader = new FileReader(file);
             CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
             String[] next;
             while ((next = csvReader.readNext()) != null) {
-                for (String obj : next) {
-                    landmarks.add(obj);
-                    System.out.println(obj);
-                }
+                Landmark lmk = new Landmark(Double.parseDouble(next[0]), Double.parseDouble(next[1]), next[2]);
+//                GraphNodeAL gnode = new  GraphNodeAL<Landmark>(lmk);
+                    landmarks.add(lmk);
             }
         } catch (Exception e) {
             e.printStackTrace();

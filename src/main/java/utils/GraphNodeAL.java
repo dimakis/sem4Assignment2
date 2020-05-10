@@ -8,7 +8,7 @@ public class GraphNodeAL<T> {
     public double x, y;
     public String landmarkName;
     public int nodeValue = Integer.MAX_VALUE;
-    public ArrayList<GraphLinkAL> links;
+//    public ArrayList<GraphLinkAL> links;
     public List<GraphLinkAL> adjList;
 
 
@@ -16,23 +16,37 @@ public class GraphNodeAL<T> {
         this.data = data;
         this.y = yCoord;
         this.x = xCoord;
-        this.links = new ArrayList<>();
+//        this.links = new ArrayList<>();
         this.adjList = new ArrayList<>();
     }
 
-    public GraphNodeAL(Landmark trevi) {
-
+    public GraphNodeAL(Landmark landmark) {
+        this.data = (T) landmark;
+//        this.data = this.getData();
+        this.x = landmark.x;
+        this.y = landmark.y;
+//        this.links = new ArrayList<>();
+        this.adjList = new ArrayList<>();
+        this.setNodeValue(this.getNodeValue());
     }
 
-    public void connectToNodeDirected(GraphNodeAL<T> destNode, int cost) {
-        adjList.add(new GraphLinkAL(destNode, cost));
+//    public void connectToNodeDirected(GraphNodeAL<T> destNode, int cost) {
+//        adjList.add(new GraphLinkAL(destNode, cost));
+//    }
+//
+//    public void connectToNodeUndirected(GraphNodeAL<T> destNode, int cost) {
+//        adjList.add(new GraphLinkAL(destNode, cost));
+//        destNode.adjList.add(new GraphLinkAL(this, cost));
+//    }
+
+    public void connectToNodeDirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int cost) {
+        adjList.add(new GraphLinkAL(startNode,destNode, cost));
     }
 
-    public void connectToNodeUndirected(GraphNodeAL<T> destNode, int cost) {
-        adjList.add(new GraphLinkAL(destNode, cost));
-        destNode.adjList.add(new GraphLinkAL(this, cost));
+    public void connectToNodeUndirected(GraphNodeAL<T> startNode,GraphNodeAL<T> destNode, int cost) {
+        adjList.add(new GraphLinkAL(startNode, destNode, cost));
+        destNode.adjList.add(new GraphLinkAL(startNode, destNode, cost));
     }
-
     public void setData(T data) {
         this.data = data;
     }
@@ -78,6 +92,6 @@ public class GraphNodeAL<T> {
     }
 
     public T getData() {
-        return null;
+        return data;
     }
 }
