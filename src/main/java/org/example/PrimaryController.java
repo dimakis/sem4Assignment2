@@ -15,6 +15,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import utils.GraphLinkAL;
 import utils.GraphNodeAL;
 import utils.Landmark;
@@ -233,10 +234,28 @@ public class PrimaryController {
             GraphNodeAL stNode = new GraphNodeAL((Landmark) selectStart.getSelectionModel().getSelectedItem());
 //            stNode.setData(selectStart.getSelectionModel().getSelectedItem());
             GraphNodeAL edNode = new GraphNodeAL((Landmark) selectEnd.getSelectionModel().getSelectedItem());
-            stNode.connectToNodeUndirected(stNode,edNode, 500);
-            CostedPath cp = Dijkstras.findCheapestPathDijkstra(stNode,edNode);
-            System.out.println(cp);
-//            Dijkstras.findCheapestPathDijkstra((GraphNodeAL<?>) selectStart.getSelectionModel().getSelectedItem(),selectEnd.getSelectionModel().getSelectedItem());
+//            stNode.connectToNodeUndirected(stNode,edNode, 500);
+            GraphNodeAL<Landmark> tre = new GraphNodeAL(new Landmark(550, 414, "Trevi"));
+            GraphNodeAL<Landmark> mar = new GraphNodeAL(new Landmark("Maria"));
+            GraphNodeAL<Landmark> jak = new GraphNodeAL(new Landmark("Jack"));
+            GraphNodeAL<Landmark> pan = new GraphNodeAL(new Landmark("Pantheon"));
+            stNode.connectToNodeUndirected(stNode,mar, 500);
+            stNode.connectToNodeUndirected(mar,tre, 800);
+
+            stNode.connectToNodeUndirected(mar,jak, 1200);
+
+            stNode.connectToNodeUndirected(tre, pan, 800);
+            stNode.connectToNodeUndirected(pan, edNode, 500);
+            CostedPath cp = Dijkstras.findCheapestPathDijkstra(stNode,edNode.data);
+            System.out.println("cp cost: " + cp.pathCost + ", cp list: "+ cp.pathList);
+//            Dijkstras.findCheapestPathDijkstra((GraphNodeAL<?>) selectStart.getSelectionModel().getSelectedItem(),selectdEnd.getSelectionModel().getSelectedItem());
+            Line line = new Line();
+            line.setStroke(Color.YELLOW);
+            line.setStartX(stNode.x);
+            line.setStartY(stNode.y);
+            line.setEndX(edNode.x);
+            line.setEndY(edNode.y);
+            landmarkPane.getChildren().add(line);
         });
     }
 
