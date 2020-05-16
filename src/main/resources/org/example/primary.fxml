@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitMenuButton?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.PrimaryController">
+<VBox prefHeight="800.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.PrimaryController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -56,45 +63,105 @@
         </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="800.0" prefWidth="1200.0" VBox.vgrow="ALWAYS">
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="800.0" prefWidth="1220.0" VBox.vgrow="ALWAYS">
       <children>
+            <TabPane layoutX="910.0" layoutY="-2.0" prefHeight="771.0" prefWidth="328.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Navigation">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="755.0" prefWidth="372.0">
+                           <children>
+                              <TilePane layoutX="8.0" layoutY="62.0" prefHeight="200.0" prefWidth="307.0">
+                                 <children>
+                                    <ComboBox fx:id="selectStart" prefHeight="26.0" prefWidth="313.0" promptText="Select Starting Location" />
+                                <Button mnemonicParsing="false" onAction="#setStart" prefHeight="26.0" prefWidth="136.0" text="Manually Select" />
+                                    <Label />
+                                    <ComboBox fx:id="selectEnd" prefHeight="26.0" prefWidth="312.0" promptText="Select Destination" />
+                                <Button mnemonicParsing="false" onAction="#setEnd" prefHeight="26.0" prefWidth="136.0" text="Manually Select" />
+                                 </children>
+                              </TilePane>
+                              <ButtonBar layoutX="64.0" layoutY="14.0" prefHeight="40.0" prefWidth="200.0">
+                                 <buttons>
+                                <Button fx:id="dijkstrasBtn" mnemonicParsing="false" text="Dijstras" />
+                                <Button fx:id="bfs_btn" mnemonicParsing="false" text="BFS" />
+                                 </buttons>
+                              </ButtonBar>
+                              <TilePane layoutX="39.0" layoutY="278.0" prefHeight="135.0" prefWidth="263.0">
+                                 <children>
+                                <SplitMenuButton fx:id="includeComboBox" mnemonicParsing="false" prefHeight="25.0" prefWidth="263.0" text="Places to Include">
+                                  <items>
+                                    <MenuItem mnemonicParsing="false" text="Action 1" />
+                                    <MenuItem mnemonicParsing="false" text="Action 2" />
+                                  </items>
+                                </SplitMenuButton>
+                                    <Button alignment="CENTER" mnemonicParsing="false" text="Add" />
+                                    <Label />
+                                <SplitMenuButton fx:id="avoidComboBox" mnemonicParsing="false" prefHeight="25.0" prefWidth="263.0" text="Places to Avoid">
+                                  <items>
+                                    <MenuItem mnemonicParsing="false" text="Action 1" />
+                                    <MenuItem mnemonicParsing="false" text="Action 2" />
+                                  </items>
+                                </SplitMenuButton>
+                                    <Button alignment="CENTER" layoutX="120.0" layoutY="36.0" mnemonicParsing="false" text="Add" />
+                                 </children>
+                              </TilePane>
+                              <Label layoutX="112.0" layoutY="262.0" text="Waypoint Support" />
+                              <TilePane layoutX="71.0" layoutY="413.0" prefHeight="310.0" prefWidth="200.0">
+                                 <children>
+                                <Label text="Enroute" />
+                                    <TextArea fx:id="enrouteListTextArea" prefHeight="58.0" prefWidth="201.0" />
+                                    <Label text="Avoiding" />
+                                    <TextArea fx:id="avoidListTextArea" layoutX="10.0" layoutY="68.0" prefHeight="58.0" prefWidth="201.0" />
+                                <Button mnemonicParsing="false" text="Clear Selection" />
+                                 </children>
+                              </TilePane>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="Landmarks">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TilePane layoutX="-3.0" layoutY="33.0" prefHeight="329.0" prefWidth="337.0">
+                                 <children>
+                                <Label prefHeight="16.0" prefWidth="95.0" text="Add Landmark" />
+                                <TextField fx:id="landmarkName" alignment="CENTER" prefHeight="25.0" prefWidth="260.0" promptText="Landmark Name" />
+                                    <RadioButton fx:id="selectArea_radioBtn" mnemonicParsing="false" text="Use Pointer Coordinates" />
+                                <Label text="Or Enter Chosen Coorinates" />
+                                    <HBox prefHeight="26.0" prefWidth="337.0">
+                                       <children>
+                                          <TextField fx:id="textField_x" alignment="CENTER" prefHeight="26.0" prefWidth="182.0" promptText="X Coord" />
+                                          <TextField fx:id="textField_y" alignment="CENTER" prefHeight="26.0" prefWidth="182.0" promptText="Y Coord" />
+                                       </children>
+                                    </HBox>
+                                <Button fx:id="addLandmarkToDB_btn" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Add" />
+                                    <Label layoutX="119.0" layoutY="171.0" prefHeight="16.0" prefWidth="119.0" />
+                                    <Label layoutX="131.0" layoutY="15.0" prefHeight="16.0" prefWidth="119.0" text="Delete Landmark" />
+                                    <ComboBox fx:id="deleteLandmarkCombo" prefHeight="26.0" prefWidth="217.0" />
+                                    <Button fx:id="deleteLandmarkToDB_btn1" layoutX="145.0" layoutY="140.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Delete" />
+                                 </children>
+                              </TilePane>
+                              <TilePane layoutX="3.0" layoutY="389.0" prefHeight="190.0" prefWidth="323.0">
+                                 <children>
+                                    <Label text="Add Cost Between Landmarks" />
+                                    <ComboBox fx:id="selectStartAddCost" prefHeight="26.0" prefWidth="323.0" promptText="Select Starting Location" />
+                                    <Label />
+                                    <ComboBox fx:id="selectDestCost" prefHeight="26.0" prefWidth="323.0" promptText="Select Destination" />
+                                    <Label layoutX="154.0" layoutY="41.0" />
+                                    <TextField fx:id="pathCostTextField" alignment="CENTER" prefHeight="26.0" prefWidth="295.0" promptText="Cost" />
+                                    <Button fx:id="addLandmarkCOST_ToDB_btn1" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Add" />
+                                 </children>
+                              </TilePane>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
         <ScrollPane prefHeight="756.0" prefWidth="914.0" />
         <ImageView fx:id="imageView" fitHeight="742.0" fitWidth="900.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
         <Pane fx:id="imagePane" layoutY="-7.0" prefHeight="756.0" prefWidth="914.0" />
-        <Button layoutX="1006.0" layoutY="724.0" mnemonicParsing="false" text="Clear Selection" />
-        <Label layoutX="993.0" layoutY="68.0" text="Selected Starting Point" />
-        <Label layoutX="999.0" layoutY="98.0" text="Selected Destination" />
-        <Button layoutX="923.0" layoutY="158.0" mnemonicParsing="false" onAction="#setStart" prefHeight="26.0" prefWidth="136.0" text="Manually Select" />
-        <Button layoutX="923.0" layoutY="218.0" mnemonicParsing="false" onAction="#setEnd" prefHeight="26.0" prefWidth="136.0" text="Manually Select" />
-        <Button fx:id="btn11" layoutX="999.0" layoutY="25.0" mnemonicParsing="false" text="BFS" />
-        <Button fx:id="djikstrasBtn" layoutX="1054.0" layoutY="25.0" mnemonicParsing="false" text="Dijstras" />
-        <SplitMenuButton layoutX="922.0" layoutY="287.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="263.0" text="Places to Include">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
-          </items>
-        </SplitMenuButton>
-        <SplitMenuButton layoutX="922.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="263.0" text="Places to Avoid">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
-          </items>
-        </SplitMenuButton>
-        <Label layoutX="1015.0" layoutY="403.0" text="Add Landmark" />
-        <TextField fx:id="landmarkName" layoutX="923.0" layoutY="426.0" prefHeight="25.0" prefWidth="263.0" promptText="Landmark Name" />
-        <Button layoutX="923.0" layoutY="486.0" mnemonicParsing="false" onAction="#setLandmark" text="Select Area" />
-        <Label layoutX="951.0" layoutY="561.0" text="Xcord" />
-        <Label layoutX="1059.0" layoutY="561.0" text="Ycord" />
-        <Label layoutX="1091.0" layoutY="222.0" text="Xcord" />
-        <Label layoutX="1135.0" layoutY="222.0" text="Ycord" />
-        <Label layoutX="1084.0" layoutY="162.0" text="Xcord" />
-        <Label layoutX="1135.0" layoutY="162.0" text="Ycord" />
-        <Button layoutX="1008.0" layoutY="597.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Add" />
-            <TextField layoutX="922.0" layoutY="533.0" prefHeight="26.0" prefWidth="95.0" />
-            <TextField layoutX="1044.0" layoutY="533.0" prefHeight="26.0" prefWidth="95.0" />
-            <Label layoutX="913.0" layoutY="461.0" text="Enter Coordinates or select from map with pointer" />
-            <ComboBox fx:id="selectStart" layoutX="924.0" layoutY="126.0" prefHeight="26.0" prefWidth="263.0" promptText="Select Starting Location" />
-            <ComboBox fx:id="selectEnd" layoutX="924.0" layoutY="188.0" prefHeight="26.0" prefWidth="263.0" promptText="Select Destination" />
         <Pane fx:id="landmarkPane" prefHeight="742.0" prefWidth="900.0" />
       </children>
     </AnchorPane>

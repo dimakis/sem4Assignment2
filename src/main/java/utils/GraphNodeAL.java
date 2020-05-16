@@ -1,21 +1,18 @@
 package utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraphNodeAL<T> {
+public class GraphNodeAL<T> implements Serializable {
     public T data;
-    public double x, y;
-    public String landmarkName;
     public int nodeValue = Integer.MAX_VALUE;
-//    public ArrayList<GraphLinkAL> links;
-    public List<GraphLinkAL> adjList;
+    //    public ArrayList<GraphLinkAL> links;
+    public ArrayList<GraphLinkAL> adjList;
 
 
-    public GraphNodeAL(T data, double xCoord, double yCoord) {
+    public GraphNodeAL(T data) {
         this.data = data;
-        this.y = yCoord;
-        this.x = xCoord;
 //        this.links = new ArrayList<>();
         this.adjList = new ArrayList<>();
     }
@@ -23,12 +20,17 @@ public class GraphNodeAL<T> {
     public GraphNodeAL(Landmark landmark) {
         this.data = (T) landmark;
 //        this.data = this.getData();
-        this.x = landmark.x;
-        this.y = landmark.y;
 //        this.links = new ArrayList<>();
         this.adjList = new ArrayList<>();
         this.setNodeValue(this.getNodeValue());
     }
+
+//    public void readObject(ObjectInputStream aInputStream) throws IOException, ClassNotFoundException {
+//        data = (T) aInputStream.readObject();
+//        adjList = (ArrayList<GraphLinkAL>) aInputStream.readObject();
+//
+//    }
+
 
 //    public void connectToNodeDirected(GraphNodeAL<T> destNode, int cost) {
 //        adjList.add(new GraphLinkAL(destNode, cost));
@@ -40,40 +42,35 @@ public class GraphNodeAL<T> {
 //    }
 
     public void connectToNodeDirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int cost) {
-        adjList.add(new GraphLinkAL(startNode,destNode, cost));
+        adjList.add(new GraphLinkAL(startNode, destNode, cost));
     }
 
-    public void connectToNodeUndirected(GraphNodeAL<T> startNode,GraphNodeAL<T> destNode, int cost) {
+    public void connectToNodeUndirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int cost) {
         adjList.add(new GraphLinkAL(startNode, destNode, cost));
         destNode.adjList.add(new GraphLinkAL(startNode, destNode, cost));
     }
+
     public void setData(T data) {
         this.data = data;
     }
 
-    public double getX() {
-        return x;
-    }
+//    public double getX() {
+//        return x;
+//    }
+//
+//    public void setX(double x) {
+//        this.x = x;
+//    }
+//
+//    public double getY() {
+//        return y;
+//    }
+//
+//    public void setY(double y) {
+//        this.y = y;
+//    }
+//
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public String getLandmarkName() {
-        return landmarkName;
-    }
-
-    public void setLandmarkName(String landmarkName) {
-        this.landmarkName = landmarkName;
-    }
 
     public int getNodeValue() {
         return nodeValue;
@@ -87,11 +84,16 @@ public class GraphNodeAL<T> {
         return adjList;
     }
 
-    public void setAdjList(List<GraphLinkAL> adjList) {
+    public void setAdjList(ArrayList<GraphLinkAL> adjList) {
         this.adjList = adjList;
     }
 
     public T getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return data.toString();
     }
 }

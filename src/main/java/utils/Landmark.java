@@ -1,6 +1,8 @@
 package utils;
 
-public class Landmark {
+import java.io.Serializable;
+
+public class Landmark implements Serializable {
     public double x, y;
     public String landmarkName;
 
@@ -40,7 +42,7 @@ public class Landmark {
     }
     @Override
     public String toString() {
-        return x + ", " + y + ", " + landmarkName;
+        return landmarkName;
     }
 }
 

@@ -1,10 +1,12 @@
 package utils;
 
-public class GraphLinkAL {
+import java.io.Serializable;
+
+public class GraphLinkAL implements Serializable {
     public GraphNodeAL<?> startNode, destNode;
     public int cost;
 
-    public <T> GraphLinkAL(GraphNodeAL<?> startNode, GraphNodeAL<?> destNode, int cost) {
+    public <T> GraphLinkAL(GraphNodeAL<?> startNode, GraphNodeAL<?> destNode, int cost)  {
         this.startNode = startNode;
         this.destNode = destNode;
         this.cost = cost;
