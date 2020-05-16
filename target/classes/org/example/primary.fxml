@@ -10,7 +10,6 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
@@ -88,21 +87,11 @@
                               </ButtonBar>
                               <TilePane layoutX="39.0" layoutY="278.0" prefHeight="135.0" prefWidth="263.0">
                                  <children>
-                                <SplitMenuButton fx:id="includeComboBox" mnemonicParsing="false" prefHeight="25.0" prefWidth="263.0" text="Places to Include">
-                                  <items>
-                                    <MenuItem mnemonicParsing="false" text="Action 1" />
-                                    <MenuItem mnemonicParsing="false" text="Action 2" />
-                                  </items>
-                                </SplitMenuButton>
-                                    <Button alignment="CENTER" mnemonicParsing="false" text="Add" />
+                                    <ComboBox fx:id="includeComboBox" prefHeight="26.0" prefWidth="281.0" promptText="Places to Include" />
+                                    <Button fx:id="addWaypoint_btn" alignment="CENTER" mnemonicParsing="false" text="Add" />
                                     <Label />
-                                <SplitMenuButton fx:id="avoidComboBox" mnemonicParsing="false" prefHeight="25.0" prefWidth="263.0" text="Places to Avoid">
-                                  <items>
-                                    <MenuItem mnemonicParsing="false" text="Action 1" />
-                                    <MenuItem mnemonicParsing="false" text="Action 2" />
-                                  </items>
-                                </SplitMenuButton>
-                                    <Button alignment="CENTER" layoutX="120.0" layoutY="36.0" mnemonicParsing="false" text="Add" />
+                                    <ComboBox fx:id="avoidComboBox" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="281.0" promptText="Places to Avoid" />
+                                    <Button fx:id="addAvoidNode_btn" alignment="CENTER" layoutX="120.0" layoutY="36.0" mnemonicParsing="false" text="Add" />
                                  </children>
                               </TilePane>
                               <Label layoutX="112.0" layoutY="262.0" text="Waypoint Support" />
@@ -128,7 +117,7 @@
                                 <Label prefHeight="16.0" prefWidth="95.0" text="Add Landmark" />
                                 <TextField fx:id="landmarkName" alignment="CENTER" prefHeight="25.0" prefWidth="260.0" promptText="Landmark Name" />
                                     <RadioButton fx:id="selectArea_radioBtn" mnemonicParsing="false" text="Use Pointer Coordinates" />
-                                <Label text="Or Enter Chosen Coorinates" />
+                                <Label text="Or Enter Chosen Coordinates" />
                                     <HBox prefHeight="26.0" prefWidth="337.0">
                                        <children>
                                           <TextField fx:id="textField_x" alignment="CENTER" prefHeight="26.0" prefWidth="182.0" promptText="X Coord" />
@@ -162,7 +151,7 @@
         <ScrollPane prefHeight="756.0" prefWidth="914.0" />
         <ImageView fx:id="imageView" fitHeight="742.0" fitWidth="900.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
         <Pane fx:id="imagePane" layoutY="-7.0" prefHeight="756.0" prefWidth="914.0" />
-        <Pane fx:id="landmarkPane" prefHeight="742.0" prefWidth="900.0" />
+        <Pane fx:id="landmarkPane" layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
       </children>
     </AnchorPane>
   </children>

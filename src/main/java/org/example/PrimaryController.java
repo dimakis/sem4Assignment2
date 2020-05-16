@@ -35,7 +35,7 @@ public class PrimaryController {
     public boolean startNode = true;
     public int[] graphArray;
     public TextField landmarkName;
-    public ComboBox selectStart, selectEnd;
+    public ComboBox selectStart, selectEnd, includeComboBox, avoidComboBox;
     public Pane landmarkPane;
     public Button dijkstrasBtn;
     public Button addLandmarkToDB_btn;
@@ -43,8 +43,6 @@ public class PrimaryController {
     public RadioButton selectArea_radioBtn;
     public TextField textField_x;
     public TextField textField_y;
-    public SplitMenuButton includeComboBox;
-    public SplitMenuButton avoidComboBox;
     public TextArea enrouteListTextArea;
     public TextArea avoidListTextArea;
     public ComboBox selectStartAddCost;
@@ -54,6 +52,8 @@ public class PrimaryController {
     public Button bfs_btn;
     public Button deleteLandmarkToDB_btn1;
     public ComboBox deleteLandmarkCombo;
+    public Button addWaypoint_btn;
+    public Button addAvoidNode_btn;
 
     public void initialize() {
         DataManager.createLandmarkList();
@@ -82,6 +82,7 @@ public class PrimaryController {
         addCostToLandmarkLinks();
         findRouteDijkstras();
         deleteLandmark();
+        addWayPoint();
     }
 
 
@@ -91,12 +92,17 @@ public class PrimaryController {
         selectDestCost.getItems().clear();
         selectStart.getSelectionModel().clearSelection();
         deleteLandmarkCombo.getItems().clear();
+        includeComboBox.getItems().clear();
+        avoidComboBox.getItems().clear();
 
         selectStart.getItems().addAll(graphlist);
         selectEnd.getItems().addAll(graphlist);
         selectDestCost.getItems().addAll(graphlist);
         selectStartAddCost.getItems().addAll(graphlist);
         deleteLandmarkCombo.getItems().addAll(graphlist);
+        includeComboBox.getItems().addAll(graphlist);
+        avoidComboBox.getItems().addAll(graphlist);
+        enrouteListTextArea.setText(waypoints.toString());
 
     }
 
@@ -105,6 +111,7 @@ public class PrimaryController {
             GraphNodeAL<Landmark> strt = (GraphNodeAL) selectStartAddCost.getSelectionModel().getSelectedItem();
             GraphNodeAL<Landmark> end = (GraphNodeAL) selectDestCost.getSelectionModel().getSelectedItem();
             strt.connectToNodeUndirected(strt, end, Integer.parseInt(pathCostTextField.getText()));
+            save();
 //            for (int i = 0; i < strt.getAdjList().size(); i++) {
 //                System.out.println("Path cost: " + strt.getAdjList().get(i).cost);
 //            }
@@ -112,19 +119,24 @@ public class PrimaryController {
     }
 
     public void deleteLandmark() {
-        GraphNodeAL<Landmark> toDel = (GraphNodeAL<Landmark>) deleteLandmarkCombo.getSelectionModel().getSelectedItem();
-        for (GraphNodeAL<Landmark> gn : graphlist
-        ) {
+        deleteLandmarkToDB_btn1.setOnAction(e -> {
+            GraphNodeAL toDel = (GraphNodeAL) deleteLandmarkCombo.getSelectionModel().getSelectedItem();
 
-            if (gn.equals(toDel)) {
-                graphlist.remove(toDel);
-//                break;
-            }
-        }
-        populateComboBox();
+            System.out.println("before Del: " + graphlist.size());
+            graphlist.remove(toDel);
+            System.out.println("After Del: " + graphlist.size());
+            updateLandmarks();
+            populateComboBox();
+            save();
+        });
     }
 
     public void addWayPoint() {
+        addWaypoint_btn.setOnAction(e -> {
+            GraphNodeAL waypoint = (GraphNodeAL) includeComboBox.getSelectionModel().getSelectedItem();
+            waypoints.add(waypoint);
+            enrouteListTextArea.setText(waypoints.toString());
+        });
 
     }
 
@@ -155,10 +167,19 @@ public class PrimaryController {
 
     public void findRouteDijkstras() {
         dijkstrasBtn.setOnAction(e -> {
+            CostedPath cp = new CostedPath();
             GraphNodeAL strt = (GraphNodeAL) selectStart.getSelectionModel().getSelectedItem();
             GraphNodeAL end = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
-            CostedPath cp = findCheapestPathDijkstra(strt, end.data);
+            waypoints.add(0,strt);
+            CostedPath tempCp = null;
+            waypoints.add(end);
+            System.out.println("waypoints: " + waypoints.toString());
+            for (int i = 0; i < waypoints.size()-1; i++) {
+                tempCp = findCheapestPathDijkstra(waypoints.get(i),waypoints.get(i+1).data);
+                cp.pathCost += tempCp.getPathCost();
+            }
             System.out.println("Hello," + cp.pathCost);
+            waypoints.clear();
         });
     }
 
@@ -260,6 +281,7 @@ public class PrimaryController {
             graphlist.add(gn);
             save();
             updateLandmarks();
+            populateComboBox();
 
 //            DataManager.saveArraylistToCSV("src/main/resources/org/example/landmarks.csv", landmarks);
         });
@@ -307,8 +329,8 @@ public class PrimaryController {
 //                (Landmark) lm = gn.
                 Circle circle = new Circle();
                 System.out.println(gn.toString());
-                circle.setCenterX(gn.data.getX() + 6);
-                circle.setCenterY(gn.data.getY() + 6);
+                circle.setCenterX(gn.data.getX());
+                circle.setCenterY(gn.data.getY());
                 circle.setRadius(6);
                 circle.setFill(Color.ORANGE);
                 landmarkPane.getChildren().add(circle);

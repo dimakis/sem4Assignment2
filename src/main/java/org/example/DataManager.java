@@ -17,6 +17,8 @@ import java.util.*;
 public class DataManager {
     public static ObservableList<Landmark> landmarks;
     public static ArrayList<GraphNodeAL> graphlist;
+    public static ArrayList<GraphNodeAL> waypoints;
+    public static ArrayList<GraphNodeAL> avoids;
 
     public static void createLandmarkList() {
         landmarks = FXCollections.observableArrayList();
@@ -28,6 +30,8 @@ public class DataManager {
 
     public static void createGraphList() {
         graphlist = new ArrayList<>();
+        waypoints = new ArrayList<>();
+        avoids = new ArrayList<>();
     }
 
 public static void save() {
