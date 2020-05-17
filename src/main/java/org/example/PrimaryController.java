@@ -54,6 +54,8 @@ public class PrimaryController {
     public ComboBox deleteLandmarkCombo;
     public Button addWaypoint_btn;
     public Button addAvoidNode_btn;
+    public RadioButton pointerForDest;
+    public RadioButton pointerForStart;
 
     public void initialize() {
         DataManager.createLandmarkList();
@@ -76,13 +78,13 @@ public class PrimaryController {
 //        findRouteDijkstras();
 //        example();
         DataManager.load();
-        nbonsense();
         populateComboBox();
         updateLandmarks();
         addCostToLandmarkLinks();
         findRouteDijkstras();
         deleteLandmark();
         addWayPoint();
+        setGraphArray();
     }
 
 
@@ -94,6 +96,7 @@ public class PrimaryController {
         deleteLandmarkCombo.getItems().clear();
         includeComboBox.getItems().clear();
         avoidComboBox.getItems().clear();
+        selectStartAddCost.getItems().clear();
 
         selectStart.getItems().addAll(graphlist);
         selectEnd.getItems().addAll(graphlist);
@@ -170,16 +173,76 @@ public class PrimaryController {
             CostedPath cp = new CostedPath();
             GraphNodeAL strt = (GraphNodeAL) selectStart.getSelectionModel().getSelectedItem();
             GraphNodeAL end = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
-            waypoints.add(0,strt);
+            waypoints.add(0, strt);
             CostedPath tempCp = null;
             waypoints.add(end);
+//            if (!avoids.isEmpty())  {
+//                for (int i = 0; i < waypoints.size()-1;i++)    {
+//                    for (int j = 0; j < avoids.size()-1;j++) {
+//                        if(waypoints.get(i).data.equals(avoids.get(j)))
+//                            waypoints.remove(i);
+//                    }
+//                }
+//            }
             System.out.println("waypoints: " + waypoints.toString());
-            for (int i = 0; i < waypoints.size()-1; i++) {
-                tempCp = findCheapestPathDijkstra(waypoints.get(i),waypoints.get(i+1).data);
+            for (int i = 0; i < waypoints.size() - 1; i++) {
+                tempCp = findCheapestPathDijkstra(waypoints.get(i), waypoints.get(i + 1).data);
                 cp.pathCost += tempCp.getPathCost();
             }
             System.out.println("Hello," + cp.pathCost);
             waypoints.clear();
+        });
+    }
+
+    public void setGraphArray() {
+        graphArray = createGraphArray(blackAndWhite);
+    }
+
+
+    public void breadthFirstSeach() {
+        bfs_btn.setOnAction(e -> {
+            int width = (int) imageView.getFitWidth();
+            if (pointerForStart.isSelected()) {
+                start.x = xCoord;
+                start.y = yCoord;
+            } else
+                start = (GraphNodeAL) selectStart.getSelectionModel().getSelectedItem();
+
+            if (pointerForDest.isSelected()) {
+                dest.x = xCoord;
+                dest.y = yCoord;
+            } else
+                dest = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
+            ArrayList agenda = new ArrayList();
+//            start.setNodeValue(1);
+            int destIndex = (int) (dest.y * (int) imageView.getFitWidth() + dest.x);
+            agenda.add(start.y * (int) imageView.getFitWidth() + start.x);
+            graphArray[(int) (start.y * (int) imageView.getFitWidth() + start.x)] = 1;
+            //            agenda.add(start.x * start.y);
+            int current = (int) agenda.remove(0);
+//            if(graphArray[current] == destIndex) {
+            int v = graphArray[current];
+            if (graphArray[current + 1] == 0) {
+                graphArray[current + 1] = v + 1;
+                agenda.add(current + 1);
+            }
+            if (graphArray[current - 1] == 0) {
+                graphArray[current - 1] = v + 1;
+                agenda.add(current - 1);
+            }
+            if (graphArray[(int) (current - imageView.getFitWidth())] == 0) {
+                graphArray[current - width] = v + 1;
+                agenda.add(current - width);
+            }
+            if (graphArray[(int) (current + imageView.getFitWidth())] == 0) {
+                graphArray[current + width] = v + 1;
+                agenda.add(current + width);
+            }
+
+//            }
+            List bfs_list;
+
+
         });
     }
 
@@ -209,9 +272,10 @@ public class PrimaryController {
 
     public void selectWaypoint() {
         landmarkPane.setOnMouseClicked(e -> {
+            imagePane.getChildren().clear();
 //            imageView.toFront();
-            xCoord = e.getX() - 7;
-            yCoord = e.getY() - 7;
+            xCoord = e.getX() + 6;
+            yCoord = e.getY() + 12;
 //            imagePane.toFront();
 //            GraphNodeAL node = new GraphNodeAL(null, xCoord, yCoord);
 //            startTrue = true;
@@ -219,7 +283,7 @@ public class PrimaryController {
             Circle circle = new Circle();
             circle.setCenterX(xCoord);
             circle.setCenterY(yCoord);
-            circle.setRadius(6);
+            circle.setRadius(5);
             circle.setFill(Color.RED);
             imagePane.getChildren().add(circle);
             circle.relocate(xCoord, yCoord);
@@ -276,14 +340,10 @@ public class PrimaryController {
                 y = Double.parseDouble(textField_y.getText());
             }
             GraphNodeAL gn = new GraphNodeAL(new Landmark(x, y, landmarkName.getText()));
-//            Landmark lm = new Landmark(x, y, landmarkName.getText());
-//            landmarks.add(lm);
             graphlist.add(gn);
             save();
             updateLandmarks();
             populateComboBox();
-
-//            DataManager.saveArraylistToCSV("src/main/resources/org/example/landmarks.csv", landmarks);
         });
     }
 
@@ -367,14 +427,6 @@ public class PrimaryController {
             DataManager.load();
         } catch (Exception e) {
             System.out.println("Load Error");
-        }
-    }
-
-    public void nbonsense() {
-        for (Object onj : graphlist
-        ) {
-            System.out.println(onj.toString());
-
         }
     }
 

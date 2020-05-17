@@ -73,10 +73,10 @@
                               <TilePane layoutX="8.0" layoutY="62.0" prefHeight="200.0" prefWidth="307.0">
                                  <children>
                                     <ComboBox fx:id="selectStart" prefHeight="26.0" prefWidth="313.0" promptText="Select Starting Location" />
-                                <Button mnemonicParsing="false" onAction="#setStart" prefHeight="26.0" prefWidth="136.0" text="Manually Select" />
+                                    <RadioButton fx:id="pointerForStart" mnemonicParsing="false" text="Use Pointer For Start" />
                                     <Label />
                                     <ComboBox fx:id="selectEnd" prefHeight="26.0" prefWidth="312.0" promptText="Select Destination" />
-                                <Button mnemonicParsing="false" onAction="#setEnd" prefHeight="26.0" prefWidth="136.0" text="Manually Select" />
+                                    <RadioButton fx:id="pointerForDest" mnemonicParsing="false" text="Use Pointer For Destination" />
                                  </children>
                               </TilePane>
                               <ButtonBar layoutX="64.0" layoutY="14.0" prefHeight="40.0" prefWidth="200.0">

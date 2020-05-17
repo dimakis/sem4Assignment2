@@ -7,8 +7,10 @@ import java.util.List;
 public class GraphNodeAL<T> implements Serializable {
     public T data;
     public int nodeValue = Integer.MAX_VALUE;
+    public double x,y;
     //    public ArrayList<GraphLinkAL> links;
     public ArrayList<GraphLinkAL> adjList;
+    public ArrayList<GraphNodeAL> adjNodeList;
 
 
     public GraphNodeAL(T data) {
@@ -47,7 +49,7 @@ public class GraphNodeAL<T> implements Serializable {
 
     public void connectToNodeUndirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int cost) {
         adjList.add(new GraphLinkAL(startNode, destNode, cost));
-        destNode.adjList.add(new GraphLinkAL(startNode, destNode, cost));
+        destNode.adjList.add(new GraphLinkAL(destNode, startNode, cost));
     }
 
     public void setData(T data) {
