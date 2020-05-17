@@ -199,7 +199,9 @@ public class PrimaryController {
     }
 
 
-    public void breadthFirstSeach() {
+
+
+    public ArrayList<Integer> breadthFirstSearch() {
         bfs_btn.setOnAction(e -> {
             int width = (int) imageView.getFitWidth();
             if (pointerForStart.isSelected()) {
@@ -213,37 +215,60 @@ public class PrimaryController {
                 dest.y = yCoord;
             } else
                 dest = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
-            ArrayList agenda = new ArrayList();
-//            start.setNodeValue(1);
-            int destIndex = (int) (dest.y * (int) imageView.getFitWidth() + dest.x);
-            agenda.add(start.y * (int) imageView.getFitWidth() + start.x);
-            graphArray[(int) (start.y * (int) imageView.getFitWidth() + start.x)] = 1;
-            //            agenda.add(start.x * start.y);
-            int current = (int) agenda.remove(0);
-//            if(graphArray[current] == destIndex) {
-            int v = graphArray[current];
-            if (graphArray[current + 1] == 0) {
-                graphArray[current + 1] = v + 1;
-                agenda.add(current + 1);
-            }
-            if (graphArray[current - 1] == 0) {
-                graphArray[current - 1] = v + 1;
-                agenda.add(current - 1);
-            }
-            if (graphArray[(int) (current - imageView.getFitWidth())] == 0) {
-                graphArray[current - width] = v + 1;
-                agenda.add(current - width);
-            }
-            if (graphArray[(int) (current + imageView.getFitWidth())] == 0) {
-                graphArray[current + width] = v + 1;
-                agenda.add(current + width);
-            }
 
-//            }
+
+
+            ArrayList<Integer> agenda = new ArrayList<>();
+//            start.setNodeValue(1);
+            int destIndex = (int) (dest.y * (int) imageView.getImage().getWidth() + dest.x);
+            int startIndex = (int) (start.y * (int) imageView.getImage().getWidth() + start.x);
+            agenda.add(startIndex);
+            graphArray[startIndex] = 1;
+            //            agenda.add(start.x * start.y);
+            int current = agenda.remove(0);
+            int v = graphArray[current];    // not sure if it goes here
+
+            ArrayList<Integer> newPath;
+            if (graphArray[current] == destIndex) {
+                    newPath = new ArrayList<>();
+                    int cn = graphArray[destIndex];
+                    int totalDistance = graphArray[destIndex];
+                    v = graphArray[current];    // not sure if it goes here
+                    newPath.add(cn);
+                    if (cn == startIndex)
+                        return newPath;
+                    else{
+
+                }
+
+            } else {
+                do {
+
+                    v = graphArray[current];    // not sure if it goes here
+                    if (graphArray[current + 1] == 0) {
+                        graphArray[current + 1] = v + 1;
+                        agenda.add(current + 1);
+                    }
+                    if (graphArray[current - 1] == 0) {
+                        graphArray[current - 1] = v + 1;
+                        agenda.add(current - 1);
+                    }
+                    if (graphArray[(int) (current - imageView.getImage().getWidth())] == 0) {
+                        graphArray[current - width] = v + 1;
+                        agenda.add(current - width);
+                    }
+                    if (graphArray[(int) (current + imageView.getImage().getWidth())] == 0) {
+                        graphArray[current + width] = v + 1;
+                        agenda.add(current + width);
+                    }
+                } while (graphArray[current] != destIndex);
+
+            }
             List bfs_list;
 
 
         });
+
     }
 
 
