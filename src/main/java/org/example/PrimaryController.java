@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.concurrent.atomic.LongAccumulator;
 
 
+import graphTraversal.BreadthFirstSearch;
 import graphTraversal.CostedPath;
 import graphTraversal.Dijkstras;
 import javafx.beans.InvalidationListener;
@@ -56,6 +57,7 @@ public class PrimaryController {
     public Button addAvoidNode_btn;
     public RadioButton pointerForDest;
     public RadioButton pointerForStart;
+    ArrayList<Integer> bfsList;
 
     public void initialize() {
         DataManager.createLandmarkList();
@@ -85,6 +87,7 @@ public class PrimaryController {
         deleteLandmark();
         addWayPoint();
         setGraphArray();
+        breadthFirstSearch();
     }
 
 
@@ -199,9 +202,11 @@ public class PrimaryController {
     }
 
 
-
-
     public ArrayList<Integer> breadthFirstSearch() {
+        bfsList = new ArrayList<>();
+//        int[] graphArr = graphArray;
+//        GraphNodeAL strt = start;
+//        GraphNodeAL dst = dest;
         bfs_btn.setOnAction(e -> {
             int width = (int) imageView.getFitWidth();
             if (pointerForStart.isSelected()) {
@@ -209,67 +214,69 @@ public class PrimaryController {
                 start.y = yCoord;
             } else
                 start = (GraphNodeAL) selectStart.getSelectionModel().getSelectedItem();
-
             if (pointerForDest.isSelected()) {
                 dest.x = xCoord;
                 dest.y = yCoord;
             } else
                 dest = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
-
-
-
-            ArrayList<Integer> agenda = new ArrayList<>();
-//            start.setNodeValue(1);
-            int destIndex = (int) (dest.y * (int) imageView.getImage().getWidth() + dest.x);
-            int startIndex = (int) (start.y * (int) imageView.getImage().getWidth() + start.x);
-            agenda.add(startIndex);
-            graphArray[startIndex] = 1;
-            //            agenda.add(start.x * start.y);
-            int current = agenda.remove(0);
-            int v = graphArray[current];    // not sure if it goes here
-
-            ArrayList<Integer> newPath;
-            if (graphArray[current] == destIndex) {
-                    newPath = new ArrayList<>();
-                    int cn = graphArray[destIndex];
-                    int totalDistance = graphArray[destIndex];
-                    v = graphArray[current];    // not sure if it goes here
-                    newPath.add(cn);
-                    if (cn == startIndex)
-                        return newPath;
-                    else{
-
-                }
-
-            } else {
-                do {
-
-                    v = graphArray[current];    // not sure if it goes here
-                    if (graphArray[current + 1] == 0) {
-                        graphArray[current + 1] = v + 1;
-                        agenda.add(current + 1);
-                    }
-                    if (graphArray[current - 1] == 0) {
-                        graphArray[current - 1] = v + 1;
-                        agenda.add(current - 1);
-                    }
-                    if (graphArray[(int) (current - imageView.getImage().getWidth())] == 0) {
-                        graphArray[current - width] = v + 1;
-                        agenda.add(current - width);
-                    }
-                    if (graphArray[(int) (current + imageView.getImage().getWidth())] == 0) {
-                        graphArray[current + width] = v + 1;
-                        agenda.add(current + width);
-                    }
-                } while (graphArray[current] != destIndex);
-
-            }
-            List bfs_list;
-
-
+            int[] graphArr =  createGraphArray(blackAndWhite); //graphArray.clone();
+            bfsList = BreadthFirstSearch.bfs(start, dest, width, graphArr);
         });
-
+        for (Integer node : bfsList
+        ) {
+            System.out.println("bfsList: " + node.intValue());
+        }
+        return bfsList;
     }
+
+
+//            ArrayList<Integer> agenda = new ArrayList<>();
+////            start.setNodeValue(1);
+//            int destIndex = (int) (dest.y * (int) imageView.getImage().getWidth() + dest.x);
+//            int startIndex = (int) (start.y * (int) imageView.getImage().getWidth() + start.x);
+//            agenda.add(startIndex);
+//            graphArray[startIndex] = 1;
+//            //            agenda.add(start.x * start.y);
+//            int current = agenda.remove(0);
+//            int v = graphArray[current];    // not sure if it goes here
+//
+//            ArrayList<Integer> newPath;
+//            if (graphArray[current] == destIndex) {
+//                    newPath = new ArrayList<>();
+//                    int cn = graphArray[destIndex];
+//                    int totalDistance = graphArray[destIndex];
+//                    v = graphArray[current];    // not sure if it goes here
+//                    newPath.add(cn);
+//                    if (cn == startIndex)
+//                        return newPath;
+//                    else{
+//
+//                }
+//
+//            } else {
+//                do {
+//
+//                    v = graphArray[current];    // not sure if it goes here
+//                    if (graphArray[current + 1] == 0) {
+//                        graphArray[current + 1] = v + 1;
+//                        agenda.add(current + 1);
+//                    }
+//                    if (graphArray[current - 1] == 0) {
+//                        graphArray[current - 1] = v + 1;
+//                        agenda.add(current - 1);
+//                    }
+//                    if (graphArray[(int) (current - imageView.getImage().getWidth())] == 0) {
+//                        graphArray[current - width] = v + 1;
+//                        agenda.add(current - width);
+//                    }
+//                    if (graphArray[(int) (current + imageView.getImage().getWidth())] == 0) {
+//                        graphArray[current + width] = v + 1;
+//                        agenda.add(current + width);
+//                    }
+//                } while (graphArray[current] != destIndex);
+//
+//            }
+//            List bfs_list;
 
 
     public int[] createGraphArray(WritableImage im) {

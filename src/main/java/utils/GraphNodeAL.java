@@ -13,11 +13,11 @@ public class GraphNodeAL<T> implements Serializable {
     public ArrayList<GraphNodeAL> adjNodeList;
 
 
-    public GraphNodeAL(T data) {
-        this.data = data;
-//        this.links = new ArrayList<>();
-        this.adjList = new ArrayList<>();
-    }
+//    public GraphNodeAL(T data) {
+//        this.data = data;
+////        this.links = new ArrayList<>();
+//        this.adjList = new ArrayList<>();
+//    }
 
     public GraphNodeAL(Landmark landmark) {
         this.data = (T) landmark;
@@ -25,6 +25,8 @@ public class GraphNodeAL<T> implements Serializable {
 //        this.links = new ArrayList<>();
         this.adjList = new ArrayList<>();
         this.setNodeValue(this.getNodeValue());
+        this.x = landmark.x;
+        this.y = landmark.y;
     }
 
 //    public void readObject(ObjectInputStream aInputStream) throws IOException, ClassNotFoundException {
