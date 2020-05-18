@@ -16,6 +16,11 @@
             <version>13</version>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>13</version>
@@ -29,7 +34,12 @@
 <!--            <groupId>com.fasterxml.woodstox</groupId>-->
 <!--            <artifactId>woodstox-core</artifactId>-->
 <!--            <version>6.1.1</version>-->
-<!--        </dependency>-->
+<!--        </dependency>--><!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>15-ea+5</version>
+        </dependency>
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>

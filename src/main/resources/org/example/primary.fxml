@@ -70,23 +70,29 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="755.0" prefWidth="372.0">
                            <children>
-                              <TilePane layoutX="8.0" layoutY="62.0" prefHeight="200.0" prefWidth="307.0">
+                              <TilePane layoutX="8.0" layoutY="62.0" prefHeight="222.0" prefWidth="313.0">
                                  <children>
                                     <ComboBox fx:id="selectStart" prefHeight="26.0" prefWidth="313.0" promptText="Select Starting Location" />
                                     <RadioButton fx:id="pointerForStart" mnemonicParsing="false" text="Use Pointer For Start" />
+                                    <RadioButton fx:id="selectStartPoint_rBtn" mnemonicParsing="false" text="Select As Start" />
                                     <Label />
                                     <ComboBox fx:id="selectEnd" prefHeight="26.0" prefWidth="312.0" promptText="Select Destination" />
                                     <RadioButton fx:id="pointerForDest" mnemonicParsing="false" text="Use Pointer For Destination" />
+                                    <RadioButton fx:id="selectEndPoint_rBtn" layoutX="107.0" layoutY="66.0" mnemonicParsing="false" text="Select As Destination" />
+                                    <Label layoutX="167.0" layoutY="93.0" />
+                                    <RadioButton fx:id="toggleLabels_btn" mnemonicParsing="false" text="Toggle Labels" />
                                  </children>
                               </TilePane>
-                              <ButtonBar layoutX="64.0" layoutY="14.0" prefHeight="40.0" prefWidth="200.0">
+                              <ButtonBar layoutX="17.0" layoutY="14.0" prefHeight="40.0" prefWidth="200.0">
                                  <buttons>
                                 <Button fx:id="dijkstrasBtn" mnemonicParsing="false" text="Dijstras" />
                                 <Button fx:id="bfs_btn" mnemonicParsing="false" text="BFS" />
+                                     <Button fx:id="findHistoric" layoutX="135.0" layoutY="18.0" mnemonicParsing="false" text="Historic" />
                                  </buttons>
                               </ButtonBar>
-                              <TilePane layoutX="39.0" layoutY="278.0" prefHeight="135.0" prefWidth="263.0">
+                              <TilePane layoutX="32.0" layoutY="305.0" prefHeight="135.0" prefWidth="263.0">
                                  <children>
+                                    <Label text="Waypoint Support" />
                                     <ComboBox fx:id="includeComboBox" prefHeight="26.0" prefWidth="281.0" promptText="Places to Include" />
                                     <Button fx:id="addWaypoint_btn" alignment="CENTER" mnemonicParsing="false" text="Add" />
                                     <Label />
@@ -94,14 +100,13 @@
                                     <Button fx:id="addAvoidNode_btn" alignment="CENTER" layoutX="120.0" layoutY="36.0" mnemonicParsing="false" text="Add" />
                                  </children>
                               </TilePane>
-                              <Label layoutX="112.0" layoutY="262.0" text="Waypoint Support" />
-                              <TilePane layoutX="71.0" layoutY="413.0" prefHeight="310.0" prefWidth="200.0">
+                              <TilePane layoutX="72.0" layoutY="448.0" prefHeight="279.0" prefWidth="201.0">
                                  <children>
                                 <Label text="Enroute" />
-                                    <TextArea fx:id="enrouteListTextArea" prefHeight="58.0" prefWidth="201.0" />
+                                    <TextArea fx:id="enrouteListTextArea" editable="false" prefHeight="58.0" prefWidth="201.0" />
                                     <Label text="Avoiding" />
-                                    <TextArea fx:id="avoidListTextArea" layoutX="10.0" layoutY="68.0" prefHeight="58.0" prefWidth="201.0" />
-                                <Button mnemonicParsing="false" text="Clear Selection" />
+                                    <TextArea fx:id="avoidListTextArea" editable="false" layoutX="10.0" layoutY="68.0" prefHeight="58.0" prefWidth="201.0" />
+                                <Button fx:id="clearSelection" mnemonicParsing="false" text="Clear Selection" />
                                  </children>
                               </TilePane>
                            </children>
@@ -124,7 +129,8 @@
                                           <TextField fx:id="textField_y" alignment="CENTER" prefHeight="26.0" prefWidth="182.0" promptText="Y Coord" />
                                        </children>
                                     </HBox>
-                                <Button fx:id="addLandmarkToDB_btn" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Add" />
+                                     <RadioButton fx:id="historic" mnemonicParsing="false" text="Historic Location" />
+                                     <Button fx:id="addLandmarkToDB_btn" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Add" />
                                     <Label layoutX="119.0" layoutY="171.0" prefHeight="16.0" prefWidth="119.0" />
                                     <Label layoutX="131.0" layoutY="15.0" prefHeight="16.0" prefWidth="119.0" text="Delete Landmark" />
                                     <ComboBox fx:id="deleteLandmarkCombo" prefHeight="26.0" prefWidth="217.0" />
@@ -148,9 +154,10 @@
                 </Tab>
               </tabs>
             </TabPane>
-        <ScrollPane prefHeight="756.0" prefWidth="914.0" />
+        <ScrollPane layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
         <ImageView fx:id="imageView" fitHeight="742.0" fitWidth="900.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-        <Pane fx:id="imagePane" layoutY="-7.0" prefHeight="756.0" prefWidth="914.0" />
+        <Pane fx:id="imagePane" layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
+            <Pane fx:id="labelPane" layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
         <Pane fx:id="landmarkPane" layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
       </children>
     </AnchorPane>
