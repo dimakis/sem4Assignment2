@@ -109,44 +109,24 @@ public class PrimaryController {
         return Color.rgb(r, g, b);
     }
 
-    public void colorPath(int index) {
-        if (index == 0) {
-            for (int path : bfsList) {
-                double x = path % imageView.getImage().getWidth();
-                double y = path / imageView.getImage().getWidth() + 1;
-                Circle circle = new Circle();
-                circle.setLayoutX(x);
-                circle.setLayoutY(y);
-                circle.setRadius(1);
-                circle.setFill(Color.RED);
-                imagePane.getChildren().add(circle);
-                bfsList = new ArrayList<>();
-            }
-        } else if (index == 1) {
-            for (int path : dfsList) {
-                double x = path % imageView.getImage().getWidth();
-                double y = path / imageView.getImage().getWidth() + 1;
-                Circle circle = new Circle();
-                circle.setLayoutX(x);
-                circle.setLayoutY(y);
-                circle.setRadius(1);
-                circle.setFill(Color.BLUE);
-                imagePane.getChildren().add(circle);
-                dfsList = new ArrayList<>();
-            }
-        } else {
-            Paint col = randomColor();
-            for (int path : choiceList) {
-                double x = path % imageView.getImage().getWidth();
-                double y = path / imageView.getImage().getWidth() + 1;
-                Circle circle = new Circle();
-                circle.setLayoutX(x);
-                circle.setLayoutY(y);
-                circle.setRadius(1);
-                circle.setFill(col);
-                imagePane.getChildren().add(circle);
-                choiceList = new ArrayList<>();
-            }
+    public void colorPath(ArrayList<Integer> arrayList, int index) {
+        Paint paint;
+        if (index == 0)
+            paint = Color.RED;
+        else if (index == 1)
+            paint = Color.BLUE;
+        else
+            paint = randomColor();
+        for (int path : arrayList) {
+            double x = path % imageView.getImage().getWidth();
+            double y = path / imageView.getImage().getWidth() + 1;
+            Circle circle = new Circle();
+            circle.setLayoutX(x);
+            circle.setLayoutY(y);
+            circle.setRadius(1);
+            circle.setFill(paint);
+            imagePane.getChildren().add(circle);
+            arrayList = new ArrayList<>();
         }
     }
 
@@ -246,11 +226,12 @@ public class PrimaryController {
         return writableImage;
     }
 
-    //
+    // uses dijkstras to find route between two nodes that are connected with weights and then uses BFS to draw lines between them
     public void findRouteDijkstras() {
         dijkstrasBtn.setOnAction(e -> {
             try {
                 CostedPath cp = new CostedPath();
+                ArrayList<Integer> dijkstraList = new ArrayList<>();
                 GraphNodeAL strt = (GraphNodeAL) selectStart.getSelectionModel().getSelectedItem();
                 GraphNodeAL end = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
                 waypoints.add(0, strt);
@@ -260,12 +241,18 @@ public class PrimaryController {
                 for (int i = 0; i < waypoints.size() - 1; i++) {
                     tempCp = findCheapestPathDijkstra(waypoints.get(i), waypoints.get(i + 1).data, avoids);
                     cp.pathCost += tempCp.getPathCost();
-                    for (GraphNodeAL node : tempCp.pathList
-                    ) {
-                        cp.pathList.add(node);
+                    for (int j = 0; j < tempCp.pathList.size(); j++) {
+                        cp.pathList.add(tempCp.getPathList().get(j));
                     }
                 }
-                System.out.println("Hello," + cp.pathCost);
+                System.out.println("Pathcost: " + cp.pathCost + "\nPathList: " + cp.pathList.toString());
+                for (int i = 0; i < cp.pathList.size() - 1; i++) {
+                    int[] arr = createGraphArray(blackAndWhite);
+                    if (!(cp.pathList.get(i).equals(cp.pathList.get(i + 1))))
+                        dijkstraList.addAll(BreadthFirstSearch.bfs(cp.pathList.get(i), cp.pathList.get(i + 1), (int) imageView.getImage().getWidth(), arr));
+                }
+                System.out.println("Pathcost: " + cp.pathCost + "\nPathList: " + cp.pathList.toString());
+                colorPath(dijkstraList, 2);
                 waypoints.clear();
                 avoids.clear();
             } catch (Exception excep) {
@@ -301,7 +288,7 @@ public class PrimaryController {
                     dest = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
                 int[] graphArr = createGraphArray(blackAndWhite);
                 bfsList = BreadthFirstSearch.bfs(start, dest, width, graphArr);
-                colorPath(0);
+                colorPath(bfsList, 0);
             } catch (Exception excep) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -330,7 +317,7 @@ public class PrimaryController {
                     dest = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
                 int[] graphArr = createGraphArray(blackAndWhite);
                 dfsList = DepthFirstSearch.dfs(start, dest, width, graphArr);
-                colorPath(1);
+                colorPath(dfsList, 1);
             } catch (Exception excep) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -369,7 +356,7 @@ public class PrimaryController {
                 int[] graphArr = createGraphArray(blackAndWhite);
                 String option = (String) searchModifier.getSelectionModel().getSelectedItem();
                 choiceList = EuclidianDistance.euclideanSearch(start, dest, width, graphArr, option);
-                colorPath(2);
+                colorPath(choiceList, 2);
             } catch (Exception excep) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -537,6 +524,10 @@ public class PrimaryController {
     public void setClearSelection() {
         clearSelection.setOnAction(e -> {
             imagePane.getChildren().clear();
+            waypoints.clear();
+            avoids.clear();
+            updateLandmarks();
+            populateComboBox();
         });
     }
 }
