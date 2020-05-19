@@ -35,8 +35,8 @@ public class PrimaryController {
     public GraphNodeAL start, dest, manStart, manDest;
     public int[] graphArray;
     public ComboBox selectStart, selectEnd, includeComboBox, avoidComboBox, selectDestCost, selectStartAddCost, deleteLandmarkCombo;
-    public Button dijkstrasBtn, addLandmarkToDB_btn, bfs_btn, addLandmarkCOST_ToDB_btn1, addWaypoint_btn, addAvoidNode_btn, findHistoric, deleteLandmarkToDB_btn1, clearSelection, dfsBtn;
-    public RadioButton selectArea_radioBtn, historic, toggleLabels_btn, pointerForDest, pointerForStart, selectEndPoint_rBtn, selectStartPoint_rBtn;
+    public Button addLandmarkToDB_btn, bfs_btn, addLandmarkCOST_ToDB_btn1, addWaypoint_btn, addAvoidNode_btn, findHistoric, deleteLandmarkToDB_btn1, clearSelection, dfsBtn;
+    public RadioButton selectArea_radioBtn,  toggleLabels_btn, pointerForDest, pointerForStart, selectEndPoint_rBtn, selectStartPoint_rBtn;
     public TextField textField_x, textField_y, pathCostTextField, landmarkName;
     public TextArea enrouteListTextArea, avoidListTextArea;
     public ArrayList<Integer> bfsList, dfsList, choiceList;
@@ -44,6 +44,10 @@ public class PrimaryController {
     public ComboBox searchModifier;
     public TextField currentCost;
     public Button showCostBtn;
+    public RadioButton easyRoute_rBtn;
+    public RadioButton historical_rBtn;
+    public ComboBox dijkstrasBtn;
+    public Button dijkstrasStart;
 
     public void initialize() {
         DataManager.createLandmarkList();
@@ -76,6 +80,8 @@ public class PrimaryController {
         addOptions();
         optionsSearch();
         displayCost();
+        setDijkstrasBtn();
+        createLabels();
     }
 
 
@@ -132,9 +138,17 @@ public class PrimaryController {
 
     public void addCostToLandmarkLinks() {
         addLandmarkCOST_ToDB_btn1.setOnAction(e -> {
+            boolean easy = false;
+            boolean hist = false;
             GraphNodeAL<Landmark> strt = (GraphNodeAL) selectStartAddCost.getSelectionModel().getSelectedItem();
             GraphNodeAL<Landmark> end = (GraphNodeAL) selectDestCost.getSelectionModel().getSelectedItem();
-            strt.connectToNodeUndirected(strt, end, Integer.parseInt(pathCostTextField.getText()));
+            if (easyRoute_rBtn.isSelected()) {
+                easy = true;
+                System.out.println("in easyRoute_btn.isSelected: " + easy);
+            }
+            if (historical_rBtn.isSelected())
+                hist = true;
+            strt.connectToNodeUndirected(strt, end, Integer.parseInt(pathCostTextField.getText()), hist, easy);
             getCost();
             save();
         });
@@ -160,20 +174,25 @@ public class PrimaryController {
             currentCost.setText("No costs associated yet");
         }
     }
+    public void createLabels()  {
+        if (toggleLabels_btn.isSelected()) {
+            for (Object node : graphlist) {
+                Label landmarkName = new Label();
+                landmarkName.setText(((Landmark) (((GraphNodeAL) node).data)).landmarkName);
+                landmarkName.setLayoutX(((Landmark) (((GraphNodeAL) node).data)).getX());
+                landmarkName.setLayoutY(((Landmark) (((GraphNodeAL) node).data)).getY());
+                labelPane.getChildren().add(landmarkName);
+            }
+        } else
+            labelPane.getChildren().clear();
+    }
 
 
     public void displayLabels() {
+        toggleLabels_btn.setSelected(true);
         toggleLabels_btn.setOnAction(e -> {
-            if (toggleLabels_btn.isSelected()) {
-                for (Object node : graphlist) {
-                    Label landmarkName = new Label();
-                    landmarkName.setText(((Landmark) (((GraphNodeAL) node).data)).landmarkName);
-                    landmarkName.setLayoutX(((Landmark) (((GraphNodeAL) node).data)).getX());
-                    landmarkName.setLayoutY(((Landmark) (((GraphNodeAL) node).data)).getY());
-                    labelPane.getChildren().add(landmarkName);
-                }
-            } else
-                labelPane.getChildren().clear();
+            createLabels();
+
         });
     }
 
@@ -226,9 +245,17 @@ public class PrimaryController {
         return writableImage;
     }
 
+    public void setDijkstrasBtn() {
+        ObservableList dijkstrasOptions = FXCollections.observableArrayList();
+        dijkstrasOptions.add("Classic");
+        dijkstrasOptions.add("Historical");
+        dijkstrasOptions.add("Easiest");
+        dijkstrasBtn.getItems().addAll(dijkstrasOptions);
+    }
+
     // uses dijkstras to find route between two nodes that are connected with weights and then uses BFS to draw lines between them
     public void findRouteDijkstras() {
-        dijkstrasBtn.setOnAction(e -> {
+        dijkstrasStart.setOnAction(e -> {
             try {
                 CostedPath cp = new CostedPath();
                 ArrayList<Integer> dijkstraList = new ArrayList<>();
@@ -238,14 +265,23 @@ public class PrimaryController {
                 CostedPath tempCp = null;
                 waypoints.add(end);
                 System.out.println("waypoints: " + waypoints.toString());
+                String modifier;
+//                System.out.println("Primary, before getTypeSelector(): " + modifier);
+                if (dijkstrasBtn.getSelectionModel().getSelectedItem().equals("Easiest"))
+                    modifier = "Easiest";
+                else if (dijkstrasBtn.getSelectionModel().getSelectedItem().equals("Historical"))
+                    modifier = "Historical";
+                else
+                    modifier = "Classic";
+//                System.out.println("In primary modified selected = " + modifier);
                 for (int i = 0; i < waypoints.size() - 1; i++) {
-                    tempCp = findCheapestPathDijkstra(waypoints.get(i), waypoints.get(i + 1).data, avoids);
+                    tempCp = findCheapestPathDijkstra(waypoints.get(i), waypoints.get(i + 1).data, avoids, modifier);
                     cp.pathCost += tempCp.getPathCost();
                     for (int j = 0; j < tempCp.pathList.size(); j++) {
                         cp.pathList.add(tempCp.getPathList().get(j));
                     }
                 }
-                System.out.println("Pathcost: " + cp.pathCost + "\nPathList: " + cp.pathList.toString());
+//                System.out.println("Pathcost: " + cp.pathCost + "\nPathList: " + cp.pathList.toString());
                 for (int i = 0; i < cp.pathList.size() - 1; i++) {
                     int[] arr = createGraphArray(blackAndWhite);
                     if (!(cp.pathList.get(i).equals(cp.pathList.get(i + 1))))
@@ -457,22 +493,30 @@ public class PrimaryController {
 
     public void addLandmarkToDatabase() {
         addLandmarkToDB_btn.setOnAction(e -> {
-            double x, y;
-            if (selectArea_radioBtn.isSelected()) {
-                x = xCoord;
-                y = yCoord;
-            } else {
-                x = Double.parseDouble(textField_x.getText());
-                y = Double.parseDouble(textField_y.getText());
-            }
-            GraphNodeAL gn = new GraphNodeAL(new Landmark(x, y, landmarkName.getText(), historic.isSelected()));
-            graphlist.add(gn);
-            save();
-            updateLandmarks();
-            populateComboBox();
-            landmarkName.setPromptText("Landmark Name");
-            selectArea_radioBtn.setSelected(false);
-            historic.setSelected(false);
+            try {
+
+
+                double x, y;
+                if (selectArea_radioBtn.isSelected()) {
+                    x = xCoord;
+                    y = yCoord;
+                } else {
+                    x = Double.parseDouble(textField_x.getText());
+                    y = Double.parseDouble(textField_y.getText());
+                }
+                GraphNodeAL gn = new GraphNodeAL(new Landmark(x, y, landmarkName.getText()));
+                graphlist.add(gn);
+                save();
+                updateLandmarks();
+                populateComboBox();
+                landmarkName.setPromptText("Landmark Name");
+                selectArea_radioBtn.setSelected(false);
+            }catch (Exception excep)    {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Landmark Error");
+                alert.setContentText("No Coordinates selected");
+                alert.showAndWait();            }
         });
     }
 

@@ -38,6 +38,10 @@ public class GraphNodeAL<T> implements Serializable {
         destNode.adjList.add(new GraphLinkAL(destNode, startNode, cost));
     }
 
+    public void connectToNodeUndirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int cost, boolean hist, boolean easy) {
+        adjList.add(new GraphLinkAL(startNode, destNode, cost, hist, easy));
+        destNode.adjList.add(new GraphLinkAL(destNode, startNode, cost, hist,easy));
+    }
     public void setData(T data) {
         this.data = data;
     }

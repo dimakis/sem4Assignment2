@@ -5,13 +5,13 @@ import java.io.Serializable;
 public class Landmark implements Serializable {
     public double x, y;
     public String landmarkName;
-    public boolean hist;
 
-    public Landmark(double x, double y, String landmarkName, boolean hist) {
+
+    public Landmark(double x, double y, String landmarkName) {
         this.x = x;
         this.y = y;
         this.landmarkName = landmarkName;
-        this.hist = hist;
+
     }
 
     public double getX() {
@@ -36,14 +36,6 @@ public class Landmark implements Serializable {
 
     public void setLandmarkName(String landmarkName) {
         this.landmarkName = landmarkName;
-    }
-
-    public boolean isHist() {
-        return hist;
-    }
-
-    public void setHist(boolean hist) {
-        this.hist = hist;
     }
 
     @Override

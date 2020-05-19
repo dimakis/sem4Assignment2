@@ -79,14 +79,13 @@
                                     <ComboBox fx:id="selectEnd" prefHeight="26.0" prefWidth="312.0" promptText="Select Destination" />
                                     <RadioButton fx:id="pointerForDest" mnemonicParsing="false" text="Use Pointer For Destination" />
                                     <RadioButton fx:id="selectEndPoint_rBtn" layoutX="107.0" layoutY="66.0" mnemonicParsing="false" text="Select As Destination" />
-                                    <Label layoutX="167.0" layoutY="93.0" />
                                     <RadioButton fx:id="toggleLabels_btn" mnemonicParsing="false" text="Toggle Labels" />
                                  </children>
                               </TilePane>
                               <ButtonBar layoutX="18.0" layoutY="3.0" prefHeight="29.0" prefWidth="153.0">
                                  <buttons>
-                                <Button fx:id="dijkstrasBtn" mnemonicParsing="false" text="Dijstras" />
-                                <Button fx:id="bfs_btn" mnemonicParsing="false" text="BFS" />
+                                <Button fx:id="dijkstrasStart" mnemonicParsing="false" text="Dijstras" />
+                                    <Button fx:id="euclideanSearchBtn" mnemonicParsing="false" text="Choice" />
                                   <Button fx:id="dfsBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="143.0" text="DFS" />
                                  </buttons>
                               </ButtonBar>
@@ -111,9 +110,9 @@
                               </TilePane>
                               <ButtonBar layoutX="17.0" layoutY="37.0" prefHeight="0.0" prefWidth="200.0">
                                 <buttons>
-                                     <Button fx:id="findHistoric" mnemonicParsing="false" prefHeight="26.0" prefWidth="132.0" text="Historic" />
+                                    <ComboBox fx:id="dijkstrasBtn" prefWidth="150.0" promptText="Dijkstra Choice" />
                                     <ComboBox fx:id="searchModifier" prefWidth="150.0" />
-                                    <Button fx:id="euclideanSearchBtn" mnemonicParsing="false" text="Choice" />
+                                <Button fx:id="bfs_btn" mnemonicParsing="false" text="BFS" />
                                 </buttons>
                               </ButtonBar>
                            </children>
@@ -136,7 +135,6 @@
                                           <TextField fx:id="textField_y" alignment="CENTER" prefHeight="26.0" prefWidth="182.0" promptText="Y Coord" />
                                        </children>
                                     </HBox>
-                                     <RadioButton fx:id="historic" mnemonicParsing="false" text="Historic Location" />
                                      <Button fx:id="addLandmarkToDB_btn" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Add" />
                                     <Label layoutX="119.0" layoutY="171.0" prefHeight="16.0" prefWidth="119.0" />
                                     <Label layoutX="131.0" layoutY="15.0" prefHeight="16.0" prefWidth="119.0" text="Delete Landmark" />
@@ -150,6 +148,12 @@
                                     <ComboBox fx:id="selectStartAddCost" prefHeight="26.0" prefWidth="323.0" promptText="Select Starting Location" />
                                     <Label />
                                     <ComboBox fx:id="selectDestCost" prefHeight="26.0" prefWidth="323.0" promptText="Select Destination" />
+                                    <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                                      <buttons>
+                                          <RadioButton fx:id="easyRoute_rBtn" mnemonicParsing="false" prefHeight="18.0" prefWidth="221.0" text="Easy Route" />
+                                          <RadioButton fx:id="historical_rBtn" layoutX="105.0" layoutY="21.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="235.0" text="Historical Route" />
+                                      </buttons>
+                                    </ButtonBar>
                                     <TextField fx:id="pathCostTextField" alignment="CENTER" prefHeight="26.0" prefWidth="295.0" promptText="Cost" />
                                     <ButtonBar prefHeight="40.0" prefWidth="170.0">
                                        <buttons>
