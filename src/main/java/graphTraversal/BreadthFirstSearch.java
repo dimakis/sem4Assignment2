@@ -24,7 +24,7 @@ public class BreadthFirstSearch {
                 ArrayList<Integer> newPath = new ArrayList<>();
                 int cn = destIndex;
                 v = graphArray[destIndex];
-                System.out.println("Total Distance: " + totalDistance);
+                System.out.println("Total Distance using Breadth First Search: " + totalDistance);
                 newPath.add(0, cn);
                 if (cn == startIndex)
                     return newPath;     //step 14

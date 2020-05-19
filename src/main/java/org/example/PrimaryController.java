@@ -6,13 +6,19 @@ import java.util.*;
 
 import graphTraversal.BreadthFirstSearch;
 import graphTraversal.CostedPath;
+import graphTraversal.DepthFirstSearch;
+import graphTraversal.EuclidianDistance;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import utils.GraphLinkAL;
 import utils.GraphNodeAL;
 import utils.Landmark;
 
@@ -29,11 +35,15 @@ public class PrimaryController {
     public GraphNodeAL start, dest, manStart, manDest;
     public int[] graphArray;
     public ComboBox selectStart, selectEnd, includeComboBox, avoidComboBox, selectDestCost, selectStartAddCost, deleteLandmarkCombo;
-    public Button dijkstrasBtn, addLandmarkToDB_btn, bfs_btn, addLandmarkCOST_ToDB_btn1, addWaypoint_btn, addAvoidNode_btn, findHistoric, deleteLandmarkToDB_btn1, clearSelection;
+    public Button dijkstrasBtn, addLandmarkToDB_btn, bfs_btn, addLandmarkCOST_ToDB_btn1, addWaypoint_btn, addAvoidNode_btn, findHistoric, deleteLandmarkToDB_btn1, clearSelection, dfsBtn;
     public RadioButton selectArea_radioBtn, historic, toggleLabels_btn, pointerForDest, pointerForStart, selectEndPoint_rBtn, selectStartPoint_rBtn;
     public TextField textField_x, textField_y, pathCostTextField, landmarkName;
     public TextArea enrouteListTextArea, avoidListTextArea;
-    public ArrayList<Integer> bfsList;
+    public ArrayList<Integer> bfsList, dfsList, choiceList;
+    public Button euclideanSearchBtn;
+    public ComboBox searchModifier;
+    public TextField currentCost;
+    public Button showCostBtn;
 
     public void initialize() {
         DataManager.createLandmarkList();
@@ -62,6 +72,10 @@ public class PrimaryController {
         displayLabels();
         startPoint = true;
         setClearSelection();
+        depthFirstSearch();
+        addOptions();
+        optionsSearch();
+        displayCost();
     }
 
 
@@ -83,23 +97,56 @@ public class PrimaryController {
         includeComboBox.getItems().addAll(graphlist);
         avoidComboBox.getItems().addAll(graphlist);
         enrouteListTextArea.setText(waypoints.toString());
+        avoidListTextArea.setText(avoids.toString());
 
     }
 
-    public void colorPath() {
-        for (int path : bfsList) {
+    public Paint randomColor() {
+        Random random = new Random();
+        int r = random.nextInt(255);
+        int g = random.nextInt(255);
+        int b = random.nextInt(255);
+        return Color.rgb(r, g, b);
+    }
 
-            double x = path % imageView.getImage().getWidth();
-            double y = path / imageView.getImage().getWidth() + 1;
-
-            Circle circle = new Circle();
-            circle.setLayoutX(x);
-            circle.setLayoutY(y);
-            circle.setRadius(1);
-            circle.setFill(Color.RED);
-
-            imagePane.getChildren().add(circle);
-            bfsList = new ArrayList<>();
+    public void colorPath(int index) {
+        if (index == 0) {
+            for (int path : bfsList) {
+                double x = path % imageView.getImage().getWidth();
+                double y = path / imageView.getImage().getWidth() + 1;
+                Circle circle = new Circle();
+                circle.setLayoutX(x);
+                circle.setLayoutY(y);
+                circle.setRadius(1);
+                circle.setFill(Color.RED);
+                imagePane.getChildren().add(circle);
+                bfsList = new ArrayList<>();
+            }
+        } else if (index == 1) {
+            for (int path : dfsList) {
+                double x = path % imageView.getImage().getWidth();
+                double y = path / imageView.getImage().getWidth() + 1;
+                Circle circle = new Circle();
+                circle.setLayoutX(x);
+                circle.setLayoutY(y);
+                circle.setRadius(1);
+                circle.setFill(Color.BLUE);
+                imagePane.getChildren().add(circle);
+                dfsList = new ArrayList<>();
+            }
+        } else {
+            Paint col = randomColor();
+            for (int path : choiceList) {
+                double x = path % imageView.getImage().getWidth();
+                double y = path / imageView.getImage().getWidth() + 1;
+                Circle circle = new Circle();
+                circle.setLayoutX(x);
+                circle.setLayoutY(y);
+                circle.setRadius(1);
+                circle.setFill(col);
+                imagePane.getChildren().add(circle);
+                choiceList = new ArrayList<>();
+            }
         }
     }
 
@@ -108,9 +155,32 @@ public class PrimaryController {
             GraphNodeAL<Landmark> strt = (GraphNodeAL) selectStartAddCost.getSelectionModel().getSelectedItem();
             GraphNodeAL<Landmark> end = (GraphNodeAL) selectDestCost.getSelectionModel().getSelectedItem();
             strt.connectToNodeUndirected(strt, end, Integer.parseInt(pathCostTextField.getText()));
+            getCost();
             save();
         });
     }
+
+    public void displayCost() {
+        showCostBtn.setOnAction(e -> {
+            getCost();
+        });
+    }
+
+    public void getCost() {
+        try {
+            GraphNodeAL<Landmark> strt = (GraphNodeAL) selectStartAddCost.getSelectionModel().getSelectedItem();
+            GraphNodeAL<Landmark> end = (GraphNodeAL) selectDestCost.getSelectionModel().getSelectedItem();
+            for (GraphLinkAL link : strt.adjList) {
+                if (link.startNode.equals(strt) && link.destNode.equals(end))
+                    currentCost.setText(String.valueOf(link.cost));
+                else
+                    currentCost.setText("No costs associated yet");
+            }
+        } catch (Exception exc) {
+            currentCost.setText("No costs associated yet");
+        }
+    }
+
 
     public void displayLabels() {
         toggleLabels_btn.setOnAction(e -> {
@@ -124,14 +194,12 @@ public class PrimaryController {
                 }
             } else
                 labelPane.getChildren().clear();
-
         });
     }
 
     public void deleteLandmark() {
         deleteLandmarkToDB_btn1.setOnAction(e -> {
             GraphNodeAL toDel = (GraphNodeAL) deleteLandmarkCombo.getSelectionModel().getSelectedItem();
-
             System.out.println("before Del: " + graphlist.size());
             graphlist.remove(toDel);
             System.out.println("After Del: " + graphlist.size());
@@ -233,7 +301,75 @@ public class PrimaryController {
                     dest = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
                 int[] graphArr = createGraphArray(blackAndWhite);
                 bfsList = BreadthFirstSearch.bfs(start, dest, width, graphArr);
-                colorPath();
+                colorPath(0);
+            } catch (Exception excep) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("No valid Start and Destination locations selected");
+                alert.showAndWait();
+            }
+        });
+    }
+
+    // this method selects the params for which to use with dfs and calls dfs
+    public void depthFirstSearch() {
+        dfsBtn.setOnAction(e -> {
+            int width = (int) imageView.getFitWidth();
+            try {
+                if (pointerForStart.isSelected()) {
+                    start = new GraphNodeAL(xCoordStart, yCoordStart);
+                    start.x = xCoordStart;
+                    start.y = yCoordStart;
+                } else
+                    start = (GraphNodeAL) selectStart.getSelectionModel().getSelectedItem();
+                if (pointerForDest.isSelected()) {
+                    dest = new GraphNodeAL(xCoordDstn, yCoordDstn);
+                    dest.x = xCoordDstn;
+                    dest.y = yCoordDstn;
+                } else
+                    dest = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
+                int[] graphArr = createGraphArray(blackAndWhite);
+                dfsList = DepthFirstSearch.dfs(start, dest, width, graphArr);
+                colorPath(1);
+            } catch (Exception excep) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("No valid Start and Destination locations selected");
+                alert.showAndWait();
+            }
+        });
+    }
+
+    public void addOptions() {
+        ObservableList options = FXCollections.observableArrayList();
+        options.add("Euclidean");
+        options.add("FeelingLucky");
+        options.add("Dodgy Taxi");
+        searchModifier.setItems(options);
+
+    }
+
+    // this method selects the params for which to use with euclidean distance
+    public void optionsSearch() {
+        euclideanSearchBtn.setOnAction(e -> {
+            int width = (int) imageView.getFitWidth();
+            try {
+                if (pointerForStart.isSelected()) {
+                    start = new GraphNodeAL(xCoordStart, yCoordStart);
+                    start.x = xCoordStart;
+                    start.y = yCoordStart;
+                } else
+                    start = (GraphNodeAL) selectStart.getSelectionModel().getSelectedItem();
+                if (pointerForDest.isSelected()) {
+                    dest = new GraphNodeAL(xCoordDstn, yCoordDstn);
+                    dest.x = xCoordDstn;
+                    dest.y = yCoordDstn;
+                } else
+                    dest = (GraphNodeAL) selectEnd.getSelectionModel().getSelectedItem();
+                int[] graphArr = createGraphArray(blackAndWhite);
+                String option = (String) searchModifier.getSelectionModel().getSelectedItem();
+                choiceList = EuclidianDistance.euclideanSearch(start, dest, width, graphArr, option);
+                colorPath(2);
             } catch (Exception excep) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");

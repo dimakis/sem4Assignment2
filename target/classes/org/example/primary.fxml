@@ -70,7 +70,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="755.0" prefWidth="372.0">
                            <children>
-                              <TilePane layoutX="8.0" layoutY="62.0" prefHeight="222.0" prefWidth="313.0">
+                              <TilePane layoutX="8.0" layoutY="69.0" prefHeight="222.0" prefWidth="313.0">
                                  <children>
                                     <ComboBox fx:id="selectStart" prefHeight="26.0" prefWidth="313.0" promptText="Select Starting Location" />
                                     <RadioButton fx:id="pointerForStart" mnemonicParsing="false" text="Use Pointer For Start" />
@@ -83,11 +83,11 @@
                                     <RadioButton fx:id="toggleLabels_btn" mnemonicParsing="false" text="Toggle Labels" />
                                  </children>
                               </TilePane>
-                              <ButtonBar layoutX="17.0" layoutY="14.0" prefHeight="40.0" prefWidth="200.0">
+                              <ButtonBar layoutX="18.0" layoutY="3.0" prefHeight="29.0" prefWidth="153.0">
                                  <buttons>
                                 <Button fx:id="dijkstrasBtn" mnemonicParsing="false" text="Dijstras" />
                                 <Button fx:id="bfs_btn" mnemonicParsing="false" text="BFS" />
-                                     <Button fx:id="findHistoric" layoutX="135.0" layoutY="18.0" mnemonicParsing="false" text="Historic" />
+                                  <Button fx:id="dfsBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="143.0" text="DFS" />
                                  </buttons>
                               </ButtonBar>
                               <TilePane layoutX="32.0" layoutY="305.0" prefHeight="135.0" prefWidth="263.0">
@@ -103,12 +103,19 @@
                               <TilePane layoutX="72.0" layoutY="448.0" prefHeight="279.0" prefWidth="201.0">
                                  <children>
                                 <Label text="Enroute" />
-                                    <TextArea fx:id="enrouteListTextArea" editable="false" prefHeight="58.0" prefWidth="201.0" />
+                                    <TextArea fx:id="enrouteListTextArea" editable="false" prefHeight="46.0" prefWidth="201.0" />
                                     <Label text="Avoiding" />
                                     <TextArea fx:id="avoidListTextArea" editable="false" layoutX="10.0" layoutY="68.0" prefHeight="58.0" prefWidth="201.0" />
                                 <Button fx:id="clearSelection" mnemonicParsing="false" text="Clear Selection" />
                                  </children>
                               </TilePane>
+                              <ButtonBar layoutX="17.0" layoutY="37.0" prefHeight="0.0" prefWidth="200.0">
+                                <buttons>
+                                     <Button fx:id="findHistoric" mnemonicParsing="false" prefHeight="26.0" prefWidth="132.0" text="Historic" />
+                                    <ComboBox fx:id="searchModifier" prefWidth="150.0" />
+                                    <Button fx:id="euclideanSearchBtn" mnemonicParsing="false" text="Choice" />
+                                </buttons>
+                              </ButtonBar>
                            </children>
                         </AnchorPane>
                   </content>
@@ -137,15 +144,20 @@
                                     <Button fx:id="deleteLandmarkToDB_btn1" layoutX="145.0" layoutY="140.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Delete" />
                                  </children>
                               </TilePane>
-                              <TilePane layoutX="3.0" layoutY="389.0" prefHeight="190.0" prefWidth="323.0">
+                              <TilePane layoutX="3.0" layoutY="387.0" prefHeight="322.0" prefWidth="323.0">
                                  <children>
                                     <Label text="Add Cost Between Landmarks" />
                                     <ComboBox fx:id="selectStartAddCost" prefHeight="26.0" prefWidth="323.0" promptText="Select Starting Location" />
                                     <Label />
                                     <ComboBox fx:id="selectDestCost" prefHeight="26.0" prefWidth="323.0" promptText="Select Destination" />
-                                    <Label layoutX="154.0" layoutY="41.0" />
                                     <TextField fx:id="pathCostTextField" alignment="CENTER" prefHeight="26.0" prefWidth="295.0" promptText="Cost" />
-                                    <Button fx:id="addLandmarkCOST_ToDB_btn1" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Add" />
+                                    <ButtonBar prefHeight="40.0" prefWidth="170.0">
+                                       <buttons>
+                                        <Button fx:id="showCostBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="259.0" text="Show Cost" />
+                                          <Button fx:id="addLandmarkCOST_ToDB_btn1" mnemonicParsing="false" prefHeight="26.0" prefWidth="68.0" text="Add" />
+                                       </buttons>
+                                    </ButtonBar>
+                                    <TextField fx:id="currentCost" alignment="CENTER" editable="false" prefHeight="24.0" prefWidth="323.0" text="Current Cost" />
                                  </children>
                               </TilePane>
                            </children>
