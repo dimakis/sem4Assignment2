@@ -1,4 +1,3 @@
-# sem4Assignment2
  City of Rome Route Finder
 
 Objective of this team CA was to create a Java app that takes in any suitable map, in this case Rome, that searches for and retrieves routes between
